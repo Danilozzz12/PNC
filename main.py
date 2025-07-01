@@ -65,6 +65,7 @@ while True:
                                         send_telegram_message(msg)
 
                             previous_odds[key] = current_odd
+                            send_telegram_message("🚨 Bot ativo e alerta de teste funcionando.")
 
     except Exception as e:
         print("Erro:", e)
