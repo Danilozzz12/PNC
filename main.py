@@ -11,7 +11,6 @@ TELEGRAM_TOKEN = '7315146387:AAEBInz6R-3P69zgw5vLF2U2pCIyoGjSM44'
 CHAT_ID = '860219273'
 DROP_THRESHOLD = 0.10
 CHECK_INTERVAL = 30  # segundos
-
 API_URL = 'https://api.pinnacle.com/v1/odds?sportId=29'
 
 def get_auth_header():
@@ -19,37 +18,29 @@ def get_auth_header():
     b64 = base64.b64encode(creds.encode()).decode()
     return {'Authorization': f'Basic {b64}'}
 
-previous_odds = {}
-
 def send_telegram_message(text):
     url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
     data = {'chat_id': CHAT_ID, 'text': text, 'parse_mode': 'Markdown'}
     requests.post(url, data=data)
 
-# Ativa o keep_alive (Flask web server)
+# Ativa o servidor para Render
 keep_alive()
 
 # Mensagem inicial
 send_telegram_message("✅ Bot de odds ativo com sucesso.")
+print(f"[{datetime.now()}] Bot iniciado com sucesso.")
 
-# Loop principal
+# Dicionário para guardar as odds anteriores
+previous_odds = {}
+
+# Loop contínuo
 while True:
     try:
         print(f"[{datetime.now()}] Verificando odds da Pinnacle...")
 
         headers = get_auth_header()
         response = requests.get(API_URL, headers=headers)
-
-        print(f"[{datetime.now()}] Status da resposta: {response.status_code}")
-
-        try:
-            data = response.json()
-            print(f"[{datetime.now()}] Dados recebidos:")
-            print(data)
-        except Exception as e:
-            print(f"[{datetime.now()}] ❌ Erro ao processar JSON: {e}")
-            send_telegram_message(f"❌ Erro ao processar JSON: {e}")
-            data = {}
+        data = response.json()
 
         for league in data.get('leagues', []):
             for event in league.get('events', []):
@@ -83,7 +74,6 @@ while True:
                             previous_odds[key] = current_odd
 
     except Exception as e:
-        print(f"[{datetime.now()}] ❌ Erro inesperado: {e}")
-        send_telegram_message(f"❌ Erro inesperado: {e}")
+        print(f"[{datetime.now()}] ❌ Erro: {e}")
 
     time.sleep(CHECK_INTERVAL)
