@@ -33,14 +33,18 @@ print(f"[{datetime.now()}] Bot iniciado com sucesso.")
 # Dicionário para guardar as odds anteriores
 previous_odds = {}
 
-# Loop contínuo
+# ... código anterior permanece igual ...
+
 while True:
+    print(f"[{datetime.now()}] 🔄 Início do ciclo de verificação")
     try:
         print(f"[{datetime.now()}] Verificando odds da Pinnacle...")
 
         headers = get_auth_header()
         response = requests.get(API_URL, headers=headers)
         data = response.json()
+
+        print(f"[{datetime.now()}] ✅ Dados recebidos com sucesso.")
 
         for league in data.get('leagues', []):
             for event in league.get('events', []):
@@ -68,7 +72,7 @@ while True:
                                             f"💸 Odd caiu de {old_odd:.2f} para {current_odd:.2f} (-{drop*100:.1f}%)\n"
                                             f"🕒 {datetime.now().strftime('%H:%M:%S')}"
                                         )
-                                        print(f"[{datetime.now()}] ALERTA ENVIADO: {msg}")
+                                        print(f"[{datetime.now()}] 🚨 ALERTA ENVIADO: {msg}")
                                         send_telegram_message(msg)
 
                             previous_odds[key] = current_odd
@@ -76,4 +80,5 @@ while True:
     except Exception as e:
         print(f"[{datetime.now()}] ❌ Erro: {e}")
 
+    print(f"[{datetime.now()}] ⏳ A dormir {CHECK_INTERVAL}s até à próxima verificação...\n")
     time.sleep(CHECK_INTERVAL)
