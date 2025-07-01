@@ -2,7 +2,6 @@ import requests
 import time
 from datetime import datetime
 import base64
-import threading
 from keep_alive import keep_alive
 
 # Configurações
@@ -14,24 +13,25 @@ DROP_THRESHOLD = 0.10
 CHECK_INTERVAL = 30  # segundos
 API_URL = 'https://api.pinnacle.com/v1/odds?sportId=29'
 
+# Autenticação básica
 def get_auth_header():
     creds = f"{USERNAME}:{PASSWORD}"
     b64 = base64.b64encode(creds.encode()).decode()
     return {'Authorization': f'Basic {b64}'}
 
+# Enviar mensagem para Telegram
 def send_telegram_message(text):
     url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
     data = {'chat_id': CHAT_ID, 'text': text, 'parse_mode': 'Markdown'}
     requests.post(url, data=data)
 
-# Mensagem inicial
-send_telegram_message("✅ Bot de odds ativo com sucesso.")
-print(f"[{datetime.now()}] Bot iniciado com sucesso.")
+# Loop principal do bot
+def start_bot_loop():
+    send_telegram_message("✅ Bot de odds ativo com sucesso.")
+    print(f"[{datetime.now()}] Bot iniciado com sucesso.")
 
-# Dicionário para guardar as odds anteriores
-previous_odds = {}
+    previous_odds = {}
 
-def verificar_odds():
     while True:
         print(f"[{datetime.now()}] 🔄 Início do ciclo de verificação")
         try:
@@ -80,8 +80,8 @@ def verificar_odds():
         print(f"[{datetime.now()}] ⏳ A dormir {CHECK_INTERVAL}s até à próxima verificação...\n")
         time.sleep(CHECK_INTERVAL)
 
-# Inicia o web server (obrigatório para Render)
+# Iniciar o servidor Flask
 keep_alive()
 
-# Inicia o bot de verificação numa thread separada
-threading.Thread(target=verificar_odds).start()
+# Iniciar o bot de odds
+start_bot_loop()
