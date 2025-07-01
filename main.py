@@ -10,7 +10,7 @@ PASSWORD = 'PN11pn12'
 TELEGRAM_TOKEN = '7315146387:AAEBInz6R-3P69zgw5vLF2U2pCIyoGjSM44'
 CHAT_ID = '860219273'
 DROP_THRESHOLD = 0.10
-CHECK_INTERVAL = 60
+CHECK_INTERVAL = 30
 
 API_URL = 'https://api.pinnacle.com/v1/odds?sportId=29'
 
@@ -28,14 +28,19 @@ def send_telegram_message(text):
 
 keep_alive()
 
-# Enviar teste uma única vez ao iniciar
+# Mensagem inicial de confirmação
 send_telegram_message("✅ Bot de odds ativo com sucesso.")
 
 while True:
     try:
+        print(f"[{datetime.now()}] Verificando odds da Pinnacle...")
+
         headers = get_auth_header()
         response = requests.get(API_URL, headers=headers)
         data = response.json()
+
+        print(f"[{datetime.now()}] Dados recebidos:")
+        print(data)
 
         for league in data.get('leagues', []):
             for event in league.get('events', []):
@@ -63,11 +68,12 @@ while True:
                                             f"💸 Odd caiu de {old_odd:.2f} para {current_odd:.2f} (-{drop*100:.1f}%)\n"
                                             f"🕒 {datetime.now().strftime('%H:%M:%S')}"
                                         )
+                                        print(f"[{datetime.now()}] ALERTA ENVIADO: {msg}")
                                         send_telegram_message(msg)
 
                             previous_odds[key] = current_odd
 
     except Exception as e:
-        print("Erro:", e)
+        print(f"Erro: {e}")
 
     time.sleep(CHECK_INTERVAL)
