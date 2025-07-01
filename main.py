@@ -5,10 +5,10 @@ import base64
 from keep_alive import keep_alive
 
 # Configurações
-USERNAME = 'teu_username_pinnacle'
-PASSWORD = 'tua_password_pinnacle'
-TELEGRAM_TOKEN = 'TEU_TOKEN_DO_BOT'
-CHAT_ID = 'TEU_CHAT_ID'
+USERNAME = 'danilocarreira05@gmail.com'
+PASSWORD = 'PN11pn12'
+TELEGRAM_TOKEN = '7315146387:AAEBInz6R-3P69zgw5vLF2U2pCIyoGjSM44'
+CHAT_ID = '860219273'
 DROP_THRESHOLD = 0.10  # 10% de queda
 CHECK_INTERVAL = 60  # a cada 60 segundos
 
