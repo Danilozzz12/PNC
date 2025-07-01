@@ -28,7 +28,7 @@ def send_telegram_message(text):
 
 keep_alive()
 
-# Mensagem inicial de confirmação
+# Mensagem inicial
 send_telegram_message("✅ Bot de odds ativo com sucesso.")
 
 while True:
@@ -38,12 +38,17 @@ while True:
         headers = get_auth_header()
         response = requests.get(API_URL, headers=headers)
 
-        # ✅ NOVO: verificar o status da resposta da API
+        # Verificação do status HTTP
         print(f"[{datetime.now()}] Status da resposta: {response.status_code}")
 
-        data = response.json()
-        print(f"[{datetime.now()}] Dados recebidos:")
-        print(data)
+        try:
+            data = response.json()
+            print(f"[{datetime.now()}] Dados recebidos:")
+            print(data)
+        except Exception as e:
+            print(f"[{datetime.now()}] ❌ Erro ao processar JSON da API: {e}")
+            send_telegram_message(f"❌ Erro ao processar JSON: {e}")
+            data = {}
 
         for league in data.get('leagues', []):
             for event in league.get('events', []):
@@ -77,6 +82,7 @@ while True:
                             previous_odds[key] = current_odd
 
     except Exception as e:
-        print(f"Erro: {e}")
+        print(f"[{datetime.now()}] ❌ Erro geral: {e}")
+        send_telegram_message(f"❌ Erro inesperado: {e}")
 
     time.sleep(CHECK_INTERVAL)
