@@ -37,8 +37,11 @@ while True:
 
         headers = get_auth_header()
         response = requests.get(API_URL, headers=headers)
-        data = response.json()
 
+        # ✅ NOVO: verificar o status da resposta da API
+        print(f"[{datetime.now()}] Status da resposta: {response.status_code}")
+
+        data = response.json()
         print(f"[{datetime.now()}] Dados recebidos:")
         print(data)
 
