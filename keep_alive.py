@@ -13,3 +13,8 @@ def run():
 def keep_alive():
     t = Thread(target=run)
     t.start()
+
+import threading
+from main import start_bot_loop
+
+threading.Thread(target=start_bot_loop).start()
