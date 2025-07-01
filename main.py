@@ -5,10 +5,10 @@ import base64
 from keep_alive import keep_alive
 
 # Configurações
-USERNAME = 'teu_username_pinnacle'
-PASSWORD = 'tua_password_pinnacle'
-TELEGRAM_TOKEN = 'TEU_TOKEN_DO_BOT'
-CHAT_ID = 'TEU_CHAT_ID'
+USERNAME = 'danilocarreira05@gmail.com'
+PASSWORD = 'PN11pn12'
+TELEGRAM_TOKEN = '7315146387:AAEBInz6R-3P69zgw5vLF2U2pCIyoGjSM44'
+CHAT_ID = '860219273'
 DROP_THRESHOLD = 0.10  # 10% de queda
 CHECK_INTERVAL = 60  # a cada 60 segundos
 
@@ -51,18 +51,13 @@ while True:
                                 if old_odd and current_odd:
                                     drop = (old_odd - current_odd) / old_odd
                                     if drop >= DROP_THRESHOLD:
-                                        msg = (
-                                            f"📉 *Drop de Odds Detectado!*
-
-"
-                                            f"🏆 {home} vs {away}
-"
-                                            f"🎯 Time: {team.upper()}
-"
-                                            f"💸 Odd caiu de {old_odd:.2f} para {current_odd:.2f} (-{drop*100:.1f}%)
-"
-                                            f"🕒 {datetime.now().strftime('%H:%M:%S')}"
-                                        )
+                                       msg = (
+    f"📉 *Drop de Odds Detectado!*\n\n"
+    f"🏆 {home} vs {away}\n"
+    f"🎯 Time: {team.upper()}\n"
+    f"💸 Odd caiu de {old_odd:.2f} para {current_odd:.2f} (-{drop*100:.1f}%)\n"
+    f"🕒 {datetime.now().strftime('%H:%M:%S')}"
+)
                                         send_telegram_message(msg)
 
                             previous_odds[key] = current_odd
