@@ -2,6 +2,7 @@ import requests
 import time
 from datetime import datetime
 import base64
+from threading import Thread
 from keep_alive import keep_alive
 
 # Configurações
@@ -13,19 +14,16 @@ DROP_THRESHOLD = 0.10
 CHECK_INTERVAL = 30  # segundos
 API_URL = 'https://api.pinnacle.com/v1/odds?sportId=29'
 
-# Autenticação básica
 def get_auth_header():
     creds = f"{USERNAME}:{PASSWORD}"
     b64 = base64.b64encode(creds.encode()).decode()
     return {'Authorization': f'Basic {b64}'}
 
-# Enviar mensagem para Telegram
 def send_telegram_message(text):
     url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
     data = {'chat_id': CHAT_ID, 'text': text, 'parse_mode': 'Markdown'}
     requests.post(url, data=data)
 
-# Loop principal do bot
 def start_bot_loop():
     send_telegram_message("✅ Bot de odds ativo com sucesso.")
     print(f"[{datetime.now()}] Bot iniciado com sucesso.")
@@ -35,12 +33,9 @@ def start_bot_loop():
     while True:
         print(f"[{datetime.now()}] 🔄 Início do ciclo de verificação")
         try:
-            print(f"[{datetime.now()}] Verificando odds da Pinnacle...")
-
             headers = get_auth_header()
             response = requests.get(API_URL, headers=headers)
             data = response.json()
-
             print(f"[{datetime.now()}] ✅ Dados recebidos com sucesso.")
 
             for league in data.get('leagues', []):
@@ -77,11 +72,11 @@ def start_bot_loop():
         except Exception as e:
             print(f"[{datetime.now()}] ❌ Erro: {e}")
 
-        print(f"[{datetime.now()}] ⏳ A dormir {CHECK_INTERVAL}s até à próxima verificação...\n")
+        print(f"[{datetime.now()}] ⏳ A dormir {CHECK_INTERVAL}s...\n")
         time.sleep(CHECK_INTERVAL)
 
-# Iniciar o servidor Flask
+# Inicia o servidor Flask
 keep_alive()
 
-# Iniciar o bot de odds
-start_bot_loop()
+# Roda o loop numa thread separada
+Thread(target=start_bot_loop).start()
