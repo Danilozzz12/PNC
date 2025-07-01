@@ -50,15 +50,15 @@ while True:
                                 old_odd = previous_odds[key]
                                 if old_odd and current_odd:
                                     drop = (old_odd - current_odd) / old_odd
-                                    if drop >= DROP_THRESHOLD:
-                                       msg = (
-    f"📉 *Drop de Odds Detectado!*\n\n"
-    f"🏆 {home} vs {away}\n"
-    f"🎯 Time: {team.upper()}\n"
-    f"💸 Odd caiu de {old_odd:.2f} para {current_odd:.2f} (-{drop*100:.1f}%)\n"
-    f"🕒 {datetime.now().strftime('%H:%M:%S')}"
-)
-                                        send_telegram_message(msg)
+                                   if drop >= DROP_THRESHOLD:
+    msg = (
+        f"📉 *Drop de Odds Detectado!*\n\n"
+        f"🏆 {home} vs {away}\n"
+        f"🎯 Time: {team.upper()}\n"
+        f"💸 Odd caiu de {old_odd:.2f} para {current_odd:.2f} (-{drop*100:.1f}%)\n"
+        f"🕒 {datetime.now().strftime('%H:%M:%S')}"
+    )
+    send_telegram_message(msg)
 
                             previous_odds[key] = current_odd
 
